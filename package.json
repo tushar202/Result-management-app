@@ -1,0 +1,16 @@
+{
+  "name": "resultsapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "mongodb": "^3.5.8",
+    "yargs": "^15.3.1"
+  }
+}
