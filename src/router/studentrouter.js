@@ -1,22 +1,25 @@
 const express=require('express')
 const Student=require('../models/student.js')
-
+const auth=require('../middleware/auth')
 const router=new express.Router()
 
 
-router.post('/student',async(req,res)=>{
-    const student=new Student(req.body)
+router.post('/student',auth,async(req,res)=>{
+    const student=new Student({
+        ...req.body,
+        createdby:req.user._id
+    })
     try{
         await student.save()
-        res.send(student)        
+        res.status(201).send(student)        
     }catch(e){
         res.status(500).send()
     }
 })
 
-router.get('/student',async(req,res)=>{
+router.get('/student',auth,async(req,res)=>{
     try{
-    const students=await Student.find({})
+    const students=await Student.find({createdby:req.user._id})
     res.send(students)
     }
     catch(e){
@@ -24,9 +27,9 @@ router.get('/student',async(req,res)=>{
     }
 })
 
-router.get('/student/:id',async(req,res)=>{
+router.get('/student/:id',auth,async(req,res)=>{
     try{
-        const student=await Student.findById(req.params.id)
+        const student=await Student.findOne({_id:req.params.id,createdby:req.user._id})
         if(!student)
         return res.status(404).send('record not found on database')
         res.send(student)
@@ -34,14 +37,14 @@ router.get('/student/:id',async(req,res)=>{
         res.status(500).send()
     }
 })
-router.patch('/student/:id',async(req,res)=>{
+router.patch('/student/:id',auth,async(req,res)=>{
     const fields=['name','class','section','email']
     const updateFields=Object.keys(req.body)
     const isValid=updateFields.every((field)=>fields.includes(field))
     if(!isValid)
     res.status(400).send('invalid operation')
     try{
-    const student=await Student.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
+    const student=await Student.findOneAndUpdate({_id:req.params.id,createdby:req.user._id},req.body,{new:true,runValidators:true})
     if(!student)
     return res.status(404).send('no such record exists in database')
     res.send(student)
@@ -51,9 +54,9 @@ router.patch('/student/:id',async(req,res)=>{
 
 })
 
-router.delete('/student/:id',async(req,res)=>{
+router.delete('/student/:id',auth,async(req,res)=>{
     try{
-    const student=await Student.findByIdAndDelete(req.params.id)
+    const student=await Student.findOneAndDelete({_id:req.params.id,createdby:req.user._id})
     if(!student)
     res.status(404).send('not record in database')
     res.send(student)

@@ -2,6 +2,7 @@ const mongoose=require('mongoose')
 const validator=require('validator')
 
 const Student=mongoose.model('Student',{
+    
     name:{
         type:String,
         required:true,
@@ -23,6 +24,16 @@ const Student=mongoose.model('Student',{
             if(!validator.isEmail(value))
             throw new Error('the email entered is incorrect')
         }
+    },
+    // addnumber:{
+    //     type:String,
+    //     trim:true,
+    //     required:true,
+    //     unique:true
+    // },
+    createdby:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true
     }
 })
 

@@ -36,12 +36,13 @@ const teacherSchema=mongoose.Schema(
     
 teacherSchema.methods.generateJwt=async function(){
     const teacher=this
-    console.log(teacher);
+    //.log(teacher);
     
     const token=await jwt.sign({_id:teacher._id.toString()},'secret')
     teacher.tokens=teacher.tokens.concat({token:token})
     await teacher.save()
-    console.log(token);
+    //console.log(token);
+    return token
 }
 
 
@@ -56,7 +57,7 @@ teacherSchema.methods.checkPassword=async function(inputPassword){
 
 teacherSchema.pre('save',async function(next){
     const  teacher=this
-    console.log("reached here");
+    //console.log("reached here");
     
     if(teacher.isModified('password')){
         teacher.password= await bcrypt.hash(teacher.password,8)
