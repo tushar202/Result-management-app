@@ -13,4 +13,4 @@ Add Students
 Add their results of various exams.
 
 
-Other accounts can not access what u created.
+Other accounts can not access what you created.
